@@ -15,7 +15,7 @@ def main():
 
     args = parser.parse_args()
 
-    home_dir = Path(os.environ.get("ISAAC_HOME", "/local/home/hanlonm"))
+    home_dir = Path(os.environ.get("CLUSTER_HOME", "/local/home/hanlonm"))
     environment = args.environment
     run_id = args.run_name
     run_name = f"{environment}_{run_id}"
@@ -24,7 +24,6 @@ def main():
     hloc_datasets_path = home_dir / "Hierarchical-Localization/datasets"
     environment_dataset_path = home_dir / "mt-matthew/data"
     trajectory_dirs = sorted(os.listdir(run_dir))
-    trajectory_variations = sorted(os.listdir(run_dir / trajectory_dirs[0]))
     image_output_dir = hloc_datasets_path / environment / "localization"
     if image_output_dir.exists():
         shutil.rmtree(image_output_dir)
