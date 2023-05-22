@@ -43,12 +43,11 @@ def main():
     bproc.renderer.set_max_amount_of_samples(5)
     bproc.renderer.set_output_format("JPEG")
     bproc.renderer.set_denoiser("OPTIX")
-
+    
+    file_names = []
     for trajectory_dir in trajectory_dirs:
         for path in sorted(os.listdir(run_dir / trajectory_dir)):
             path_array: np.ndarray = np.load(run_dir / trajectory_dir / path)
-            file_names = []
-            bproc.utility.reset_keyframes()
             for i, pose in enumerate(path_array):
                 p_xyz = pose[:3]
                 q_wxyz = pose[3:]
@@ -59,16 +58,14 @@ def main():
                 file_name = (trajectory_dir + "_" + path[:-4] + "_wp_" +
                              str(i).zfill(3) + ".jpeg")
                 file_names.append(file_name)
-            data = bproc.renderer.render(None)
-            print(data.keys())
-            print(len(data["colors"]))
-            print(len(file_names))
-            for i, image_array in enumerate(data["colors"]):
-                # Convert the NumPy array to PIL Image
-                pil_image = Image.fromarray(image_array)
+    data = bproc.renderer.render(None)
 
-                # Save the image to disk using PIL
-                pil_image.save(image_output_dir / file_names[i])
+    for i, image_array in enumerate(data["colors"]):
+        # Convert the NumPy array to PIL Image
+        pil_image = Image.fromarray(image_array)
+
+        # Save the image to disk using PIL
+        pil_image.save(image_output_dir / file_names[i])
 
 
 if __name__ == "__main__":

@@ -50,14 +50,14 @@ def main():
         file_names = []
 
         for i, pose in enumerate(pose_data):
-                p_xyz = pose[:3]
-                q_wxyz = pose[3:]
-                rot = pr.matrix_from_quaternion(q_wxyz)
-                rot = rot @ cam_rotation
-                matrix_world = bproc.math.build_transformation_mat(p_xyz, rot)
-                bproc.camera.add_camera_pose(matrix_world)
-                file_name = run_id + "_" +(str(i).zfill(4) + ".jpeg")
-                file_names.append(file_name)
+            p_xyz = pose[:3]
+            q_wxyz = pose[3:]
+            rot = pr.matrix_from_quaternion(q_wxyz)
+            rot = rot @ cam_rotation
+            matrix_world = bproc.math.build_transformation_mat(p_xyz, rot)
+            bproc.camera.add_camera_pose(matrix_world)
+            file_name = run_id + "_" +(str(i).zfill(4) + ".jpeg")
+            file_names.append(file_name)
         data = bproc.renderer.render(None)
         for i, image_array in enumerate(data["colors"]):
             # Convert the NumPy array to PIL Image
