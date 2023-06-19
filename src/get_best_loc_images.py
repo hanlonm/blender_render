@@ -19,16 +19,22 @@ def main():
     environment = args.environment
     run_id = args.run_name
     run_name = f"{environment}_{run_id}"
-    eval_dir = home_dir / "mt-matthew/eval_results/path_data"
-    run_dir = eval_dir / run_name
+    eval_dir = home_dir / "mt-matthew/eval_results/path_data/{}_{}/best_loc".format(
+        environment, run_id)
+    # run_dir = eval_dir / run_name
     hloc_datasets_path = home_dir / "Hierarchical-Localization/datasets"
     environment_dataset_path = home_dir / "mt-matthew/data"
-    trajectory_dirs = sorted(os.listdir(run_dir))
-    trajectory_dirs = [dir for dir in trajectory_dirs if "best_loc" not in dir]
-    image_output_dir = hloc_datasets_path / environment / "localization"
+    # trajectory_dirs = sorted(os.listdir(run_dir))
+    image_output_dir = hloc_datasets_path / environment / "best_loc"
+    # image_output_dir = Path("output")
     if image_output_dir.exists():
         shutil.rmtree(image_output_dir)
     image_output_dir.mkdir(exist_ok=True)
+
+    path_file = np.load(eval_dir / "paths.npz")
+
+    path_keys = list(path_file.keys())
+    path_keys = [str(key) for key in path_keys]
 
     bproc.init()
     scene = bproc.loader.load_blend(
@@ -44,21 +50,24 @@ def main():
     bproc.renderer.set_max_amount_of_samples(5)
     bproc.renderer.set_output_format("JPEG")
     bproc.renderer.set_denoiser("OPTIX")
+    print()
 
-    file_names = []
-    for trajectory_dir in trajectory_dirs:
-        for path in sorted(os.listdir(run_dir / trajectory_dir)):
-            path_array: np.ndarray = np.load(run_dir / trajectory_dir / path)
-            for i, pose in enumerate(path_array):
+    image_names = []
+    for key in path_keys:
+        path = path_file[key]
+        for i, waypoint in enumerate(path):
+            for j, pose in enumerate(waypoint):
                 p_xyz = pose[:3]
                 q_wxyz = pose[3:]
                 rot = pr.matrix_from_quaternion(q_wxyz)
                 rot = rot @ cam_rotation
                 matrix_world = bproc.math.build_transformation_mat(p_xyz, rot)
                 bproc.camera.add_camera_pose(matrix_world)
-                file_name = (trajectory_dir + "_" + path[:-4] + "_wp_" +
-                             str(i).zfill(3) + ".jpeg")
-                file_names.append(file_name)
+
+                image_name = key + "_wp_" + str(i).zfill(3) + "_v_" + str(
+                    j).zfill(3) + ".jpeg"
+                image_names.append(image_name)
+
     data = bproc.renderer.render(None)
 
     for i, image_array in enumerate(data["colors"]):
@@ -66,7 +75,7 @@ def main():
         pil_image = Image.fromarray(image_array)
 
         # Save the image to disk using PIL
-        pil_image.save(image_output_dir / file_names[i])
+        pil_image.save(image_output_dir / image_names[i])
 
 
 if __name__ == "__main__":
