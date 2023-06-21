@@ -59,7 +59,7 @@ def main():
                 file_name = (trajectory_dir + "_" + path[:-4] + "_wp_" +
                              str(i).zfill(3) + ".jpeg")
                 file_names.append(file_name)
-    data = bproc.renderer.render(None)
+    data = bproc.renderer.render(output_dir="temp")
 
     for i, image_array in enumerate(data["colors"]):
         # Convert the NumPy array to PIL Image

@@ -11,7 +11,7 @@ from PIL import Image
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--environment", type=str, default="00195")
-    parser.add_argument("--run_name", type=str, default="best_test")
+    parser.add_argument("--run_name", type=str, default="test")
 
     args = parser.parse_args()
 
@@ -57,8 +57,8 @@ def main():
         path = path_file[key]
         for i, waypoint in enumerate(path):
             for j, pose in enumerate(waypoint):
-                p_xyz = pose[:3]
-                q_wxyz = pose[3:]
+                p_xyz = pose[0][:3]
+                q_wxyz = pose[0][3:]
                 rot = pr.matrix_from_quaternion(q_wxyz)
                 rot = rot @ cam_rotation
                 matrix_world = bproc.math.build_transformation_mat(p_xyz, rot)
@@ -68,7 +68,7 @@ def main():
                     j).zfill(3) + ".jpeg"
                 image_names.append(image_name)
 
-    data = bproc.renderer.render(None)
+    data = bproc.renderer.render(output_dir="temp")
 
     for i, image_array in enumerate(data["colors"]):
         # Convert the NumPy array to PIL Image
