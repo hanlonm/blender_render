@@ -19,11 +19,10 @@ def main():
     environment = args.environment
     run_id = args.run_name
     run_name = f"{environment}_{run_id}"
-    eval_dir = home_dir / "mt-matthew/eval_results/path_data/{}_{}/best_loc".format(
-        environment, run_id)
     # run_dir = eval_dir / run_name
     hloc_datasets_path = home_dir / "Hierarchical-Localization/datasets"
     environment_dataset_path = home_dir / "mt-matthew/data"
+    eval_dir = environment_dataset_path / environment / "best_loc"
     # trajectory_dirs = sorted(os.listdir(run_dir))
     image_output_dir = hloc_datasets_path / environment / "best_loc"
     # image_output_dir = Path("output")
