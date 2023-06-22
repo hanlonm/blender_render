@@ -6,6 +6,7 @@ import os
 import shutil
 import pytransform3d.rotations as pr
 from PIL import Image
+from tqdm import tqdm
 
 
 def main():
@@ -52,7 +53,7 @@ def main():
     print()
 
     image_names = []
-    for key in path_keys:
+    for key in tqdm(path_keys):
         path = path_file[key]
         for i, waypoint in enumerate(path):
             for j, pose in enumerate(waypoint):
