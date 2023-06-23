@@ -7,6 +7,8 @@ import shutil
 import pytransform3d.rotations as pr
 from PIL import Image
 import h5py
+import uuid
+
 
 def main():
 
@@ -21,7 +23,7 @@ def main():
     environment_dataset_path = home_dir / "mt-matthew/data"
 
     bproc.init()
-    
+
     camera_matrix = np.array([[609.5238037109375, 0, 640],
                               [0.0, 610.1694946289062, 360], [0, 0.0, 1.0]])
     bproc.camera.set_intrinsics_from_K_matrix(K=camera_matrix,
@@ -33,13 +35,14 @@ def main():
     bproc.renderer.set_output_format("JPEG")
     bproc.renderer.set_denoiser("OPTIX")
 
-
-    hf = h5py.File(str(environment_dataset_path) + f"/training_data/{run_id}.h5")
+    hf = h5py.File(
+        str(environment_dataset_path) + f"/training_data/{run_id}.h5")
     print(hf.keys())
     for environment_key in hf.keys():
         print(environment_key)
         scene = bproc.loader.load_blend(
-        str(environment_dataset_path) + f"/{environment_key}/{environment_key}.blend")
+            str(environment_dataset_path) +
+            f"/{environment_key}/{environment_key}.blend")
         bproc.lighting.light_surface(scene, 1.0)
         pose_data = hf[environment_key]["pose_data"][:]
         image_output_dir = hloc_datasets_path / environment_key / "training"
@@ -56,20 +59,22 @@ def main():
             rot = rot @ cam_rotation
             matrix_world = bproc.math.build_transformation_mat(p_xyz, rot)
             bproc.camera.add_camera_pose(matrix_world)
-            file_name = run_id + "_" +(str(i).zfill(4) + ".jpeg")
+            file_name = run_id + "_" + (str(i).zfill(4) + ".jpeg")
             file_names.append(file_name)
-        data = bproc.renderer.render(None)
+        temp_dir = uuid.uuid4().hex
+        temp_dir = temp_dir[:8]
+        data = bproc.renderer.render(output_dir=temp_dir)
         for i, image_array in enumerate(data["colors"]):
             # Convert the NumPy array to PIL Image
             pil_image = Image.fromarray(image_array)
 
             # Save the image to disk using PIL
             pil_image.save(image_output_dir / file_names[i])
-        
+
         bproc.object.delete_multiple(scene)
 
-    
     print()
+
 
 if __name__ == "__main__":
     main()
