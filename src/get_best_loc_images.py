@@ -7,6 +7,7 @@ import shutil
 import pytransform3d.rotations as pr
 from PIL import Image
 from tqdm import tqdm
+import uuid
 
 
 def main():
@@ -68,7 +69,9 @@ def main():
                     j).zfill(3) + ".jpeg"
                 image_names.append(image_name)
 
-    data = bproc.renderer.render(output_dir="temp")
+    temp_dir = uuid.uuid4().hex
+    temp_dir = temp_dir[:8]
+    data = bproc.renderer.render(output_dir=temp_dir)
 
     for i, image_array in enumerate(data["colors"]):
         # Convert the NumPy array to PIL Image

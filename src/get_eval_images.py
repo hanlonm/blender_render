@@ -6,6 +6,7 @@ import os
 import shutil
 import pytransform3d.rotations as pr
 from PIL import Image
+import uuid
 
 
 def main():
@@ -59,7 +60,9 @@ def main():
                 file_name = (trajectory_dir + "_" + path[:-4] + "_wp_" +
                              str(i).zfill(3) + ".jpeg")
                 file_names.append(file_name)
-    data = bproc.renderer.render(output_dir="temp")
+    temp_dir = uuid.uuid4().hex
+    temp_dir = temp_dir[:8]
+    data = bproc.renderer.render(output_dir=temp_dir)
 
     for i, image_array in enumerate(data["colors"]):
         # Convert the NumPy array to PIL Image
