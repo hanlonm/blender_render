@@ -53,9 +53,11 @@ def main():
     bproc.renderer.set_denoiser("OPTIX")
     print()
 
-    image_names = []
     for key in tqdm(path_keys):
+        image_names = []
         path = path_file[key]
+        bproc.utility.reset_keyframes()
+
         for i, waypoint in enumerate(path):
             for j, pose in enumerate(waypoint):
                 p_xyz = pose[0][:3]
@@ -69,16 +71,18 @@ def main():
                     j).zfill(3) + ".jpeg"
                 image_names.append(image_name)
 
-    temp_dir = uuid.uuid4().hex
-    temp_dir = temp_dir[:8]
-    data = bproc.renderer.render(output_dir=temp_dir)
+        temp_dir = uuid.uuid4().hex
+        temp_dir = temp_dir[:8]
+        data = bproc.renderer.render(None)
 
-    for i, image_array in enumerate(data["colors"]):
-        # Convert the NumPy array to PIL Image
-        pil_image = Image.fromarray(image_array)
+        for i, image_array in enumerate(data["colors"]):
+            # Convert the NumPy array to PIL Image
+            pil_image = Image.fromarray(image_array)
 
-        # Save the image to disk using PIL
-        pil_image.save(image_output_dir / image_names[i])
+            print(i)
+            # Save the image to disk using PIL
+            pil_image.save(image_output_dir / image_names[i])
+        data = {}
 
 
 if __name__ == "__main__":
