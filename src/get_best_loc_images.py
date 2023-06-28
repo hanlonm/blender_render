@@ -79,7 +79,7 @@ def main():
             # Convert the NumPy array to PIL Image
             pil_image = Image.fromarray(image_array)
 
-            print(i)
+            # print(i)
             # Save the image to disk using PIL
             pil_image.save(image_output_dir / image_names[i])
         data = {}
