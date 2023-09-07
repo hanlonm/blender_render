@@ -89,7 +89,7 @@ def main():
                 bproc.camera.add_camera_pose(matrix_world)
             frame += 1
 
-    data = bproc.renderer.render(output_dir="output")
+    data = bproc.renderer.render()
     #bproc.writer.write_hdf5("output", data)
 
     # for i, image_array in enumerate(data["colors"]):
