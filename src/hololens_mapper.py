@@ -92,12 +92,12 @@ def main():
     data = bproc.renderer.render()
     #bproc.writer.write_hdf5("output", data)
 
-    # for i, image_array in enumerate(data["colors"]):
-    #     # Convert the NumPy array to PIL Image
-    #     pil_image = Image.fromarray(image_array)
+    for i, image_array in enumerate(data["colors"]):
+        # Convert the NumPy array to PIL Image
+        pil_image = Image.fromarray(image_array)
 
-    #     # Save the image to disk using PIL
-    #     pil_image.save(image_output_dir / image_names[i])
+        # Save the image to disk using PIL
+        pil_image.save(image_output_dir / image_names[i])
     for i, depth_array in enumerate(data["depth"]):
         depth_h5.create_dataset(image_names[i], data=depth_array)
     depth_h5.close()
