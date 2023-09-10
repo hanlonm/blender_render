@@ -16,9 +16,9 @@ def main():
 
     args = parser.parse_args()
 
-    home_dir = Path(os.environ.get("CLUSTER_HOME", "/local/home/hanlonm"))
+    home_dir = Path(os.environ.get("BASE_DIR", "/local/home/hanlonm"))
     environment = args.environment
-    environment_dataset_path = home_dir / "mt-matthew/data"
+    environment_dataset_path = home_dir / "active-viewpoint-selection/data"
     hloc_datasets_path = home_dir / "Hierarchical-Localization/datasets"
     output_directory: Path = hloc_datasets_path / environment
     output_directory.mkdir(exist_ok=True)
@@ -33,7 +33,7 @@ def main():
 
     # [dev_LF, dev_LL, dev_RF, dev_RR]
     hololens_transforms = np.load(
-        str(home_dir) + "/mt-matthew/data/hololens_transforms.npy")
+        str(home_dir) + "/active-viewpoint-selection/data/hololens_transforms.npy")
     cam_rotation = np.array([[0.0, -0.0, -1.0], [-1.0, 0.0, -0.0],
                              [0.0, 1.0, 0.0]])
     bproc.init()

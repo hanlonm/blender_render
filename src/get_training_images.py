@@ -17,10 +17,10 @@ def main():
 
     args = parser.parse_args()
 
-    home_dir = Path(os.environ.get("CLUSTER_HOME", "/local/home/hanlonm"))
+    home_dir = Path(os.environ.get("BASE_DIR", "/local/home/hanlonm"))
     run_id = args.run_name
     hloc_datasets_path = home_dir / "Hierarchical-Localization/datasets"
-    environment_dataset_path = home_dir / "mt-matthew/data"
+    environment_dataset_path = home_dir / "active-viewpoint-selection/data"
 
     bproc.init()
 

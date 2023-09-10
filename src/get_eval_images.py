@@ -16,14 +16,14 @@ def main():
 
     args = parser.parse_args()
 
-    home_dir = Path(os.environ.get("CLUSTER_HOME", "/local/home/hanlonm"))
+    home_dir = Path(os.environ.get("BASE_DIR", "/local/home/hanlonm"))
     environment = args.environment
     run_id = args.run_name
     run_name = f"{environment}_{run_id}"
-    eval_dir = home_dir / "mt-matthew/eval_results/path_data"
+    eval_dir = home_dir / "active-viewpoint-selection/eval_results/path_data"
     run_dir = eval_dir / run_name
     hloc_datasets_path = home_dir / "Hierarchical-Localization/datasets"
-    environment_dataset_path = home_dir / "mt-matthew/data"
+    environment_dataset_path = home_dir / "active-viewpoint-selection/data"
     trajectory_dirs = sorted(os.listdir(run_dir))
     trajectory_dirs = [dir for dir in trajectory_dirs if "best_loc" not in dir]
     image_output_dir = hloc_datasets_path / environment / "localization"
